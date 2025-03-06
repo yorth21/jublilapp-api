@@ -1,0 +1,177 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Users {
+  id             Int      @id @default(autoincrement())
+  names          String   @db.VarChar(150)
+  lastNames      String   @map("last_names") @db.VarChar(150)
+  identification  String   @unique @db.VarChar(20)
+  email          String   @unique @db.VarChar(100)
+  address        String   @db.VarChar(150)
+  phone          String   @db.VarChar(20)
+  password       String   @db.VarChar(256)
+  birthDate      DateTime @map("birth_date") @db.Date
+  gender         String   @db.Char(1)
+  job            String   @db.VarChar(200)
+  isActive       Boolean  @map("is_active") @default(true)
+
+  @@map("users")
+
+  VocationalTest VocationalTests[]
+  PsychologicalTest PsychologicalTests[]
+  Post Posts[]
+  Comment Comments[]
+}
+
+model VocationalTests {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @map("user_id")
+  createdAt DateTime @map("created_at") @default(now())
+
+  @@map("vocational_tests")
+
+  user      Users     @relation(fields: [userId], references: [id])
+  responses VocationalResponses[]
+}
+
+model VocationalQuestions {
+  id       Int      @id @default(autoincrement())
+  question String
+  position Int
+
+  @@map("vocational_questions")
+
+  answers  VocationalAnswers[]
+}
+
+model VocationalCategories {
+  id          Int      @id @default(autoincrement())
+  code        String   @unique @db.Char(1)
+  name        String   @db.VarChar(50)
+  description String
+
+  @@map("vocational_categories")
+
+  answers     VocationalAnswers[]
+}
+
+model VocationalAnswers {
+  id         Int      @id @default(autoincrement())
+  questionId Int      @map("question_id")
+  answer     String
+  categoryId Int      @map("category_id")
+
+  @@map("vocational_answers")
+
+  question   VocationalQuestions @relation(fields: [questionId], references: [id])
+  category   VocationalCategories @relation(fields: [categoryId], references: [id])
+  responses  VocationalResponses[]
+}
+
+model VocationalResponses {
+  id        Int               @id @default(autoincrement())
+  testId    Int               @map("test_id")
+  answerId  Int               @map("answer_id")
+
+  @@map("vocational_responses")
+
+  test      VocationalTests    @relation(fields: [testId], references: [id])
+  answer    VocationalAnswers  @relation(fields: [answerId], references: [id])
+}
+
+model PsychologicalTests {
+  id        Int              @id @default(autoincrement())
+  userId    Int              @map("user_id")  
+  createdAt DateTime         @default(now())
+
+  @@map("psychological_tests")
+
+  user      Users                    @relation(fields: [userId], references: [id])
+  responses PsychologicalResponses[]
+}
+
+model PsychologicalDimensions {
+  id          Int                    @id @default(autoincrement())
+  name        String                 @db.VarChar(50)
+  description String
+  position    Int
+
+  @@map("psychological_dimensions")
+
+  questions   PsychologicalQuestions[]
+}
+
+model PsychologicalQuestions {
+  id          Int                     @id @default(autoincrement())
+  question    String
+  dimensionId Int                     @map("dimension_id")
+  position    Int
+
+  @@map("psychological_questions")
+
+  dimension   PsychologicalDimensions  @relation(fields: [dimensionId], references: [id])
+  responses   PsychologicalResponses[]
+}
+
+model LikertScales {
+  id     Int                     @id @default(autoincrement())
+  name   String                  @db.VarChar(100)
+  value  Int                     @unique
+
+  @@map("likert_scales")
+
+  responses PsychologicalResponses[]
+}
+
+model PsychologicalResponses {
+  id         Int                    @id @default(autoincrement())
+  testId     Int                    @map("test_id")     
+  questionId Int                    @map("question_id")
+  scaleId    Int                    @map("scale_id")    
+
+  @@map("psychological_responses")
+
+  test       PsychologicalTests      @relation(fields: [testId], references: [id])
+  question   PsychologicalQuestions  @relation(fields: [questionId], references: [id])
+  scale      LikertScales            @relation(fields: [scaleId], references: [id])
+}
+
+model Posts {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @map("user_id")
+  title     String   @db.VarChar(150)
+  content   String
+  createdAt DateTime @map("created_at") @default(now())
+  isActive  Boolean  @map("is_active") @default(true)
+
+  @@map("posts")
+
+  user      Users     @relation(fields: [userId], references: [id])
+  comments  Comments[]
+}
+
+model Comments {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @map("user_id")
+  postId    Int      @map("post_id")
+  content   String
+  createdAt DateTime @map("created_at") @default(now())
+  isActive  Boolean  @map("is_active") @default(true)
+
+  @@map("comments")
+
+  user      Users     @relation(fields: [userId], references: [id])
+  post      Posts     @relation(fields: [postId], references: [id])
+}
