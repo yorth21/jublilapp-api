@@ -12,7 +12,8 @@ async function main() {
         email: 'juan.gomez@example.com',
         address: 'Calle 123 #45-67',
         phone: '3001234567',
-        password: '$2b$10$hashedpassword1',
+        password:
+          '$2b$10$lSuJRFTU5.0OMViGc4xLWeVpYPu9sJuuv27m56CnBra85DVHzsKWa',
         birthDate: new Date('1990-05-21'),
         gender: 'M',
         job: 'Ingeniero de Software',
@@ -28,7 +29,8 @@ async function main() {
         email: 'maria.lopez@example.com',
         address: 'Carrera 45 #89-10',
         phone: '3109876543',
-        password: '$2b$10$hashedpassword2',
+        password:
+          '$2b$10$lSuJRFTU5.0OMViGc4xLWeVpYPu9sJuuv27m56CnBra85DVHzsKWa',
         birthDate: new Date('1995-09-10'),
         gender: 'F',
         job: 'Diseñadora Gráfica',
@@ -47,6 +49,6 @@ main()
     console.error(e);
     process.exit(1);
   })
-  .finally(async () => {
-    await prisma.$disconnect();
+  .finally(() => {
+    void prisma.$disconnect();
   });

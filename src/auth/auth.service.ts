@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'src/prisma.service';
 import { LoginDto } from './dto/login.dto';
@@ -17,7 +18,12 @@ export class AuthService {
 
     if (!foundUser) return null;
 
-    if (foundUser.password === user.password) {
+    const isPasswordValid = await bcrypt.compare(
+      user.password,
+      foundUser.password,
+    );
+
+    if (isPasswordValid) {
       return this.jwtService.sign({
         id: foundUser.id,
         identification: foundUser.identification,
