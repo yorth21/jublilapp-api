@@ -40,6 +40,10 @@ export class UsersController {
 
   @Get(':identification')
   @ApiOperation({ summary: 'Get a user by identification' })
+  @ApiOkResponse({
+    description: 'User found',
+    type: ResUserDto,
+  })
   @ApiBearerAuth()
   findOne(@Param('identification') identificacion: string) {
     return this.usersService.findOne(identificacion);
@@ -47,6 +51,10 @@ export class UsersController {
 
   @Patch(':identification')
   @ApiOperation({ summary: 'Update a user by identification' })
+  @ApiOkResponse({
+    description: 'User updated',
+    type: ResUserDto,
+  })
   @ApiBearerAuth()
   update(
     @Param('identification') identification: string,
