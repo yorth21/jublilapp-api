@@ -26,17 +26,17 @@ export class UsersService {
     return this.prisma.users.findMany();
   }
 
-  findOne(id: number) {
+  findOne(identification: string) {
     return this.prisma.users.findUnique({
       where: {
-        id: id,
+        identification,
       },
     });
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
+  update(identification: string, updateUserDto: UpdateUserDto) {
     return this.prisma.users.update({
-      where: { id: id },
+      where: { identification },
       data: updateUserDto,
     });
   }
