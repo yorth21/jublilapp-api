@@ -3,8 +3,8 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 async function seederUsers() {
-  const [juan, maria] = await prisma.$transaction(async (prisma) => {
-    const juan = await prisma.users.create({
+  await prisma.$transaction(async (prisma) => {
+    await prisma.users.create({
       data: {
         names: 'Juan Carlos',
         lastNames: 'Gómez Pérez',
@@ -21,7 +21,7 @@ async function seederUsers() {
       },
     });
 
-    const maria = await prisma.users.create({
+    await prisma.users.create({
       data: {
         names: 'María Fernanda',
         lastNames: 'López Ruiz',
@@ -37,11 +37,7 @@ async function seederUsers() {
         isActive: true,
       },
     });
-
-    return [juan, maria];
   });
-
-  console.log({ juan, maria });
 }
 
 async function seederVocationalTest() {
