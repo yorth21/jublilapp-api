@@ -15,7 +15,6 @@ export class AllExceptionFilter implements ExceptionFilter {
     const request = ctx.getRequest<Request>();
 
     if (exception instanceof HttpException) {
-      console.log(exception);
       const status = exception.getStatus();
       const responseObj = exception.getResponse() as {
         message: string | string[];
@@ -28,7 +27,6 @@ export class AllExceptionFilter implements ExceptionFilter {
         message: responseObj.message,
       });
     } else {
-      console.error(exception);
       response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
         timestamp: new Date().toISOString(),
