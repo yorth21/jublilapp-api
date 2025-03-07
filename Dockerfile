@@ -1,31 +1,37 @@
-FROM node:23-alpine
+# Etapa de construcción
+FROM node:20-alpine AS build
 
-# Establece el directorio de trabajo
 WORKDIR /app
 
-# Copia los archivos necesarios
+# Copiar archivos de dependencias
 COPY package*.json ./
+COPY prisma ./prisma/
 
-# Instala las dependencias
-RUN npm install
+# Instalar dependencias
+RUN npm ci
 
-# Copia el resto del proyecto
+# Copiar el código fuente
 COPY . .
 
-RUN echo $DATABASE_URL
+# Generar cliente Prisma
+RUN npx prisma generate
 
-# Compila el proyecto
+# Compilar la aplicación
 RUN npm run build
 
-# Ejecuta las migraciones de Prisma
-RUN npx prisma generate
-RUN npx prisma migrate deploy
+# Etapa de producción
+FROM node:20-alpine
 
-# Poblado de la base de datos con el seeder
-RUN npx prisma db seed
+WORKDIR /app
 
-# Expone el puerto
-EXPOSE 4000
+# Copiar archivos necesarios desde la etapa de construcción
+COPY --from=build /app/node_modules ./node_modules
+COPY --from=build /app/package*.json ./
+COPY --from=build /app/dist ./dist
+COPY --from=build /app/prisma ./prisma
 
-# Comando para ejecutar la app
+# Exponer el puerto que utiliza la aplicación
+EXPOSE 3000
+
+# Comando para ejecutar la aplicación
 CMD ["npm", "run", "start:prod"]

@@ -1,6 +1,7 @@
 services:
   jubilappdb:
     image: postgres:16
+    container_name: jubilappdb
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 123456
@@ -8,9 +9,30 @@ services:
     ports:
       - "5434:5432"
     volumes:
-      - ./pgdata:/var/lib/postgresql/data
+      - ./pg_data:/var/lib/postgresql/data
+    networks:
+      - jubilapp-network
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d jubilappdb"]
       interval: 5s
       timeout: 5s
       retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jubilapp-api
+    depends_on:
+      jubilappdb:
+        condition: service_healthy
+    environment:
+      - DATABASE_URL=postgresql://postgres:123456@jubilappdb:5432/jubilappdb?schema=public
+    ports:
+      - "4000:3000"
+    networks:
+      - jubilapp-network
+
+networks:
+  jubilapp-network:
+    driver: bridge
