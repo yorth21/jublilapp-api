@@ -45,7 +45,9 @@ lerna-debug.log*
 # temp directory
 .temp
 .tmp
-/pgdata
+
+# Volume Docker
+/pg_data
 
 # Runtime data
 pids
