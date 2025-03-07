@@ -11,7 +11,17 @@ import { VocationalAnswewrsModule } from './vocational-answewrs/vocational-answe
 import { VocationalResponsesModule } from './vocational-responses/vocational-responses.module';
 
 @Module({
-  imports: [UsersModule, AuthModule, PostsModule, CommentsModule, VocationalTestsModule, VocationalQuestionsModule, VocationalCategoriesModule, VocationalAnswewrsModule, VocationalResponsesModule],
+  imports: [
+    UsersModule,
+    AuthModule,
+    PostsModule,
+    CommentsModule,
+    VocationalTestsModule,
+    VocationalQuestionsModule,
+    VocationalCategoriesModule,
+    VocationalAnswewrsModule,
+    VocationalResponsesModule,
+  ],
   providers: [JwtAuthGuard],
 })
 export class AppModule {}
