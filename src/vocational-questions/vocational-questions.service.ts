@@ -12,7 +12,15 @@ export class VocationalQuestionsService {
   }
 
   findAll() {
-    return this.prisma.vocationalQuestions.findMany();
+    return this.prisma.vocationalQuestions.findMany({
+      include: {
+        answers: {
+          include: {
+            category: true,
+          },
+        },
+      },
+    });
   }
 
   findOne(id: number) {
