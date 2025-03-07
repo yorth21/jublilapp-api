@@ -8,7 +8,8 @@ import {
 import { LoginDto } from './dto/login.dto';
 import { AuthService } from './auth.service';
 import { Public } from './decorators/public.decorator';
-import { TokenEntity } from './entities/token.entity';
+import { ResLoginDto } from './dto/res-login.dto';
+import { ApiOkResponse, ApiOperation } from '@nestjs/swagger';
 
 @Controller('auth')
 export class AuthController {
@@ -16,7 +17,12 @@ export class AuthController {
 
   @Post('login')
   @Public()
-  async login(@Body() data: LoginDto): Promise<TokenEntity> {
+  @ApiOperation({ summary: 'Login user' })
+  @ApiOkResponse({
+    description: 'User logged in',
+    type: ResLoginDto,
+  })
+  async login(@Body() data: LoginDto): Promise<ResLoginDto> {
     const userToken = await this.authService.validateUser(data);
     if (!userToken)
       throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
