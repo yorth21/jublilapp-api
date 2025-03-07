@@ -22,7 +22,6 @@ export class PostsController {
     @Body() createPostDto: CreatePostDto,
     @Req() req: AuthenticatedRequest,
   ) {
-    console.log(req.user);
     return this.postsService.create(createPostDto, req.user.id);
   }
 
