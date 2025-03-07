@@ -2,6 +2,8 @@ import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
+import { AllExceptionFilter } from './core/errors/all-exceptions.filter';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -18,6 +20,10 @@ async function bootstrap() {
   app.enableCors({
     origin: '*',
   });
+
+  app.useGlobalPipes(new ValidationPipe());
+
+  app.useGlobalFilters(new AllExceptionFilter());
 
   const jwtAuthGuard = app.get(JwtAuthGuard);
   app.useGlobalGuards(jwtAuthGuard);
