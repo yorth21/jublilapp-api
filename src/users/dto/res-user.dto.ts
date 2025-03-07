@@ -9,7 +9,13 @@ import {
   Matches,
 } from 'class-validator';
 
-export class CreateUserDto {
+export class ResUserDto {
+  @ApiProperty({
+    description: 'User ID',
+    example: 1,
+  })
+  id: number;
+
   @ApiProperty({
     description: 'First name(s) of the user',
     example: 'John',
@@ -59,15 +65,6 @@ export class CreateUserDto {
   @IsNotEmpty()
   @Matches(/^\d{10}$/)
   phone: string;
-
-  @ApiProperty({
-    description: 'Password for the user account, between 6 and 20 characters',
-    example: 'secureP@ss123',
-  })
-  @IsString()
-  @IsNotEmpty()
-  @Length(6, 20)
-  password: string;
 
   @ApiProperty({
     description: 'Birth date of the user in YYYY-MM-DD format',
