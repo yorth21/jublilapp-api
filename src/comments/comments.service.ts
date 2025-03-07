@@ -29,6 +29,12 @@ export class CommentsService {
     });
   }
 
+  findByPostId(postId: number) {
+    return this.prisma.comments.findMany({
+      where: { postId },
+    });
+  }
+
   update(id: number, updateCommentDto: UpdateCommentDto) {
     return `This action updates a #${id} comment`;
   }
