@@ -2,10 +2,8 @@ services:
   jubilappdb:
     image: postgres:16
     container_name: jubilappdb
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 123456
-      POSTGRES_DB: jubilappdb
+    env_file:
+      - .env
     ports:
       - "5434:5432"
     volumes:
@@ -26,8 +24,8 @@ services:
     depends_on:
       jubilappdb:
         condition: service_healthy
-    environment:
-      - DATABASE_URL=postgresql://postgres:123456@jubilappdb:5432/jubilappdb?schema=public
+    env_file:
+      - .env
     ports:
       - "4000:3000"
     networks:
