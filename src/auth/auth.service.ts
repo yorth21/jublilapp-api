@@ -24,10 +24,13 @@ export class AuthService {
     );
 
     if (isPasswordValid) {
-      return this.jwtService.sign({
-        id: foundUser.id,
-        identification: foundUser.identification,
-      });
+      return {
+        accessToken: this.jwtService.sign({
+          id: foundUser.id,
+          identification: foundUser.identification,
+        }),
+        user: foundUser,
+      };
     }
   }
 }

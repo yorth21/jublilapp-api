@@ -8,6 +8,7 @@ import {
 import { LoginDto } from './dto/login.dto';
 import { AuthService } from './auth.service';
 import { Public } from './decorators/public.decorator';
+import { TokenEntity } from './entities/token.entity';
 
 @Controller('auth')
 export class AuthController {
@@ -15,11 +16,11 @@ export class AuthController {
 
   @Post('login')
   @Public()
-  async login(@Body() data: LoginDto) {
+  async login(@Body() data: LoginDto): Promise<TokenEntity> {
     const userToken = await this.authService.validateUser(data);
     if (!userToken)
       throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
 
-    return { access_token: userToken };
+    return { accessToken: userToken.accessToken, user: userToken.user };
   }
 }
