@@ -1,34 +1,44 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Req } from '@nestjs/common';
 import { VocationalResponsesService } from './vocational-responses.service';
-import { CreateVocationalResponseDto } from './dto/create-vocational-response.dto';
-import { UpdateVocationalResponseDto } from './dto/update-vocational-response.dto';
+import { ApiBearerAuth, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
+import { AuthenticatedRequest } from 'src/interfaces/authenticated-user.interface';
+import { TestResultDto } from './dto/test-result.dto';
+import { CreateVocationalTestDto } from './dto/create-vocational-test.dto';
 
 @Controller('vocational-responses')
 export class VocationalResponsesController {
-  constructor(private readonly vocationalResponsesService: VocationalResponsesService) {}
+  constructor(
+    private readonly vocationalResponsesService: VocationalResponsesService,
+  ) {}
 
   @Post()
-  create(@Body() createVocationalResponseDto: CreateVocationalResponseDto) {
-    return this.vocationalResponsesService.create(createVocationalResponseDto);
+  @ApiOperation({ summary: 'Response vocational test' })
+  @ApiBearerAuth()
+  @ApiOkResponse({
+    description: 'The record has been successfully created.',
+    type: TestResultDto,
+  })
+  create(
+    @Body() responsesTest: CreateVocationalTestDto,
+    @Req() req: AuthenticatedRequest,
+  ) {
+    return this.vocationalResponsesService.create(
+      responsesTest.responses,
+      req.user.id,
+    );
   }
 
-  @Get()
-  findAll() {
-    return this.vocationalResponsesService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.vocationalResponsesService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateVocationalResponseDto: UpdateVocationalResponseDto) {
-    return this.vocationalResponsesService.update(+id, updateVocationalResponseDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.vocationalResponsesService.remove(+id);
+  @Get('by-user/:identification')
+  @ApiOperation({ summary: 'Get all responses by user identification' })
+  @ApiBearerAuth()
+  @ApiOkResponse({
+    description: 'List of all responses by user',
+    type: TestResultDto,
+    isArray: true,
+  })
+  findByUser(@Param('identification') identification: string) {
+    return this.vocationalResponsesService.findTestResultByUserIdentification(
+      identification,
+    );
   }
 }
