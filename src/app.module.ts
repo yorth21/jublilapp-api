@@ -4,11 +4,10 @@ import { AuthModule } from './auth/auth.module';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { PostsModule } from './posts/posts.module';
 import { CommentsModule } from './comments/comments.module';
-import { VocationalTestsModule } from './vocational-tests/vocational-tests.module';
 import { VocationalQuestionsModule } from './vocational-questions/vocational-questions.module';
 import { VocationalCategoriesModule } from './vocational-categories/vocational-categories.module';
-import { VocationalAnswewrsModule } from './vocational-answewrs/vocational-answewrs.module';
 import { VocationalResponsesModule } from './vocational-responses/vocational-responses.module';
+import { VocationalAnswersModule } from './vocational-answers/vocational-answers.module';
 
 @Module({
   imports: [
@@ -16,11 +15,10 @@ import { VocationalResponsesModule } from './vocational-responses/vocational-res
     AuthModule,
     PostsModule,
     CommentsModule,
-    VocationalTestsModule,
     VocationalQuestionsModule,
     VocationalCategoriesModule,
-    VocationalAnswewrsModule,
     VocationalResponsesModule,
+    VocationalAnswersModule,
   ],
   providers: [JwtAuthGuard],
 })

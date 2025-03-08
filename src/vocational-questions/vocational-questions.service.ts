@@ -1,37 +1,51 @@
-import { Injectable } from '@nestjs/common';
-import { CreateVocationalQuestionDto } from './dto/create-vocational-question.dto';
-import { UpdateVocationalQuestionDto } from './dto/update-vocational-question.dto';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
+import { ResVocationalQuestionDto } from './dto/res-vocational-question.dto';
+import { VocationalQuestionMapper } from './mappers/vocational-question.mapper';
+import { VocationalAnswerMapper } from 'src/vocational-answers/mappers/vocational-answer.mapper';
 
 @Injectable()
 export class VocationalQuestionsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  create(createVocationalQuestionDto: CreateVocationalQuestionDto) {
-    return 'This action adds a new vocationalQuestion';
-  }
-
-  findAll() {
-    return this.prisma.vocationalQuestions.findMany({
+  async findAll(): Promise<ResVocationalQuestionDto[]> {
+    const questions = await this.prisma.vocationalQuestions.findMany({
       include: {
-        answers: {
-          include: {
-            category: true,
-          },
-        },
+        answers: true,
       },
+    });
+
+    return questions.map((question) => {
+      const questionMapper =
+        VocationalQuestionMapper.toResVocationalQuestionDto(question);
+
+      questionMapper.answers = question.answers.map((answer) => {
+        return VocationalAnswerMapper.toResVocationalAnswerDto(answer);
+      });
+
+      return questionMapper;
     });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} vocationalQuestion`;
-  }
+  async findOne(id: number): Promise<ResVocationalQuestionDto> {
+    const question = await this.prisma.vocationalQuestions.findUnique({
+      where: { id },
+      include: {
+        answers: true,
+      },
+    });
 
-  update(id: number, updateVocationalQuestionDto: UpdateVocationalQuestionDto) {
-    return `This action updates a #${id} vocationalQuestion`;
-  }
+    if (!question) {
+      throw new NotFoundException(`Question with id ${id} not found`);
+    }
 
-  remove(id: number) {
-    return `This action removes a #${id} vocationalQuestion`;
+    const questionMapper =
+      VocationalQuestionMapper.toResVocationalQuestionDto(question);
+
+    questionMapper.answers = question.answers.map((answer) => {
+      return VocationalAnswerMapper.toResVocationalAnswerDto(answer);
+    });
+
+    return questionMapper;
   }
 }

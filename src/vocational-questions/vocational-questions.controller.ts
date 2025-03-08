@@ -1,15 +1,7 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 import { VocationalQuestionsService } from './vocational-questions.service';
-import { CreateVocationalQuestionDto } from './dto/create-vocational-question.dto';
-import { UpdateVocationalQuestionDto } from './dto/update-vocational-question.dto';
+import { ApiBearerAuth, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
+import { ResVocationalQuestionDto } from './dto/res-vocational-question.dto';
 
 @Controller('vocational-questions')
 export class VocationalQuestionsController {
@@ -17,34 +9,26 @@ export class VocationalQuestionsController {
     private readonly vocationalQuestionsService: VocationalQuestionsService,
   ) {}
 
-  @Post()
-  create(@Body() createVocationalQuestionDto: CreateVocationalQuestionDto) {
-    return this.vocationalQuestionsService.create(createVocationalQuestionDto);
-  }
-
   @Get()
+  @ApiOperation({ summary: 'Get all vocational questions' })
+  @ApiBearerAuth()
+  @ApiOkResponse({
+    description: 'List of all vocational questions',
+    type: ResVocationalQuestionDto,
+    isArray: true,
+  })
   findAll() {
     return this.vocationalQuestionsService.findAll();
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'Get a vocational question by id' })
+  @ApiBearerAuth()
+  @ApiOkResponse({
+    description: 'Vocational question found',
+    type: ResVocationalQuestionDto,
+  })
   findOne(@Param('id') id: string) {
     return this.vocationalQuestionsService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateVocationalQuestionDto: UpdateVocationalQuestionDto,
-  ) {
-    return this.vocationalQuestionsService.update(
-      +id,
-      updateVocationalQuestionDto,
-    );
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.vocationalQuestionsService.remove(+id);
   }
 }
