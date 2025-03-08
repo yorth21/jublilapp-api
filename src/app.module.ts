@@ -5,9 +5,7 @@ import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { PostsModule } from './posts/posts.module';
 import { CommentsModule } from './comments/comments.module';
 import { VocationalQuestionsModule } from './vocational-questions/vocational-questions.module';
-import { VocationalCategoriesModule } from './vocational-categories/vocational-categories.module';
 import { VocationalResponsesModule } from './vocational-responses/vocational-responses.module';
-import { VocationalAnswersModule } from './vocational-answers/vocational-answers.module';
 
 @Module({
   imports: [
@@ -16,9 +14,7 @@ import { VocationalAnswersModule } from './vocational-answers/vocational-answers
     PostsModule,
     CommentsModule,
     VocationalQuestionsModule,
-    VocationalCategoriesModule,
     VocationalResponsesModule,
-    VocationalAnswersModule,
   ],
   providers: [JwtAuthGuard],
 })
