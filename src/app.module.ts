@@ -6,6 +6,7 @@ import { PostsModule } from './posts/posts.module';
 import { CommentsModule } from './comments/comments.module';
 import { VocationalQuestionsModule } from './vocational-questions/vocational-questions.module';
 import { VocationalResponsesModule } from './vocational-responses/vocational-responses.module';
+import { PsychologicalResponsesModule } from './psychological-responses/psychological-responses.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { VocationalResponsesModule } from './vocational-responses/vocational-res
     CommentsModule,
     VocationalQuestionsModule,
     VocationalResponsesModule,
+    PsychologicalResponsesModule,
   ],
   providers: [JwtAuthGuard],
 })

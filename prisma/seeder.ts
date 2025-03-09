@@ -597,9 +597,325 @@ async function seederVocationalTest() {
   });
 }
 
+async function createLikertScales() {
+  const scales = [
+    { name: 'Totalmente en desacuerdo', value: 1 },
+    { name: 'En desacuerdo', value: 2 },
+    { name: 'Ni de acuerdo ni en desacuerdo', value: 3 },
+    { name: 'De acuerdo', value: 4 },
+    { name: 'Totalmente de acuerdo', value: 5 },
+  ];
+
+  await prisma.likertScales.createMany({
+    data: scales,
+  });
+}
+
+async function createPsychologicalDimensions() {
+  const dimensions = [
+    {
+      name: 'Control Personal',
+      description:
+        'Evaluación de la percepción sobre la influencia en la vida y entorno',
+      position: 1,
+    },
+    {
+      name: 'Seguridad Personal',
+      description: 'Percepción de confianza y seguridad en sí mismo',
+      position: 2,
+    },
+    {
+      name: 'Relaciones Sociales',
+      description:
+        'Satisfacción con las interacciones sociales y el apoyo recibido',
+      position: 3,
+    },
+    {
+      name: 'Autonomía',
+      description:
+        'Capacidad para tomar decisiones y actuar de forma independiente',
+      position: 4,
+    },
+  ];
+
+  await prisma.psychologicalDimensions.createMany({
+    data: dimensions,
+  });
+}
+
+async function createPsychologicalQuestions() {
+  const questionsByDimension = {
+    'Control Personal': [
+      {
+        question: 'Me siento capaz de tomar decisiones importantes en mi vida.',
+        position: 1,
+      },
+      {
+        question:
+          'Creo que tengo el control sobre los eventos que ocurren en mi vida.',
+        position: 2,
+      },
+      {
+        question: 'Siento que mi opinión es valorada por los demás.',
+        position: 3,
+      },
+      {
+        question: 'Me esfuerzo por mejorar mi vida y alcanzar mis metas.',
+        position: 4,
+      },
+    ],
+    'Seguridad Personal': [
+      { question: 'Me siento seguro/a sobre el futuro.', position: 5 },
+      {
+        question: 'Confío en mis habilidades para enfrentar problemas.',
+        position: 6,
+      },
+      { question: 'Me siento satisfecho/a con mi vida actual.', position: 7 },
+      {
+        question: 'No me preocupa en exceso lo que sucederá mañana.',
+        position: 8,
+      },
+    ],
+    'Relaciones Sociales': [
+      {
+        question: 'Tengo personas en quienes confiar cuando lo necesito.',
+        position: 9,
+      },
+      {
+        question: 'Siento que pertenezco a un grupo de amigos o familia.',
+        position: 10,
+      },
+      { question: 'Disfruto de la compañía de los demás.', position: 11 },
+      {
+        question: 'Me siento apreciado/a por las personas cercanas a mí.',
+        position: 12,
+      },
+    ],
+    Autonomía: [
+      {
+        question:
+          'Puedo desenvolverme bien en mi vida diaria sin ayuda constante.',
+        position: 13,
+      },
+      {
+        question:
+          'Me siento capaz de manejar mis responsabilidades personales.',
+        position: 14,
+      },
+      {
+        question: 'Me gusta hacer cosas por mi cuenta sin depender de otros.',
+        position: 15,
+      },
+      {
+        question: 'No necesito que otros tomen decisiones por mí.',
+        position: 16,
+      },
+    ],
+  };
+
+  const dimensions = await prisma.psychologicalDimensions.findMany();
+
+  for (const dimension of dimensions) {
+    const questions = questionsByDimension[`${dimension.name}`] as {
+      question: string;
+      position: number;
+    }[];
+
+    if (questions) {
+      for (const q of questions) {
+        await prisma.psychologicalQuestions.create({
+          data: {
+            question: q.question,
+            dimensionId: dimension.id,
+            position: q.position,
+          },
+        });
+      }
+    }
+  }
+}
+
+async function createInterpretationPsychologicalTest() {
+  const levels = [
+    { min: 0, max: 20, level: 'muy bajo' },
+    { min: 20, max: 40, level: 'bajo' },
+    { min: 40, max: 60, level: 'moderado' },
+    { min: 60, max: 80, level: 'alto' },
+    { min: 80, max: 101, level: 'muy alto' },
+  ];
+
+  await prisma.interpretationLevels.createMany({
+    data: levels,
+  });
+
+  const interpretations = [
+    {
+      dimensionId: 1,
+      levelId: 1,
+      description:
+        'Indica una percepción muy limitada de control sobre la vida y las decisiones. Puede experimentar sentimientos de impotencia.',
+    },
+    {
+      dimensionId: 1,
+      levelId: 2,
+      description:
+        'Sugiere dificultades para sentirse en control de las decisiones y eventos importantes de la vida.',
+    },
+    {
+      dimensionId: 1,
+      levelId: 3,
+      description:
+        'Refleja una capacidad moderada para tomar decisiones e influir en su vida, aunque con algunas limitaciones.',
+    },
+    {
+      dimensionId: 1,
+      levelId: 4,
+      description:
+        'Indica una buena percepción de control sobre las decisiones y eventos en su vida, con confianza en su capacidad de influencia.',
+    },
+    {
+      dimensionId: 1,
+      levelId: 5,
+      description:
+        'Refleja una excelente percepción de control e influencia sobre su vida y entorno, con gran confianza en la toma de decisiones.',
+    },
+    {
+      dimensionId: 2,
+      levelId: 1,
+      description:
+        'Indica niveles muy altos de inseguridad y preocupación sobre el futuro y baja confianza en las propias habilidades.',
+    },
+    {
+      dimensionId: 2,
+      levelId: 2,
+      description:
+        'Sugiere preocupaciones significativas sobre el futuro y limitada confianza en las propias capacidades.',
+    },
+    {
+      dimensionId: 2,
+      levelId: 3,
+      description:
+        'Refleja un equilibrio entre confianza y preocupación, con satisfacción moderada con la vida actual.',
+    },
+    {
+      dimensionId: 2,
+      levelId: 4,
+      description:
+        'Indica buena confianza en las propias habilidades y una visión generalmente positiva del futuro.',
+    },
+    {
+      dimensionId: 2,
+      levelId: 5,
+      description:
+        'Refleja una gran seguridad en sí mismo, optimismo sobre el futuro y alta satisfacción con la vida actual.',
+    },
+    {
+      dimensionId: 3,
+      levelId: 1,
+      description:
+        'Indica aislamiento social significativo y ausencia de apoyo social percibido.',
+    },
+    {
+      dimensionId: 3,
+      levelId: 2,
+      description:
+        'Sugiere conexiones sociales limitadas y poco satisfactorias, con escaso apoyo percibido.',
+    },
+    {
+      dimensionId: 3,
+      levelId: 3,
+      description:
+        'Refleja relaciones sociales adecuadas pero con algunas limitaciones en la profundidad o calidad.',
+    },
+    {
+      dimensionId: 3,
+      levelId: 4,
+      description:
+        'Indica buenas conexiones sociales, con presencia de personas de confianza y sentido de pertenencia.',
+    },
+    {
+      dimensionId: 3,
+      levelId: 5,
+      description:
+        'Refleja excelentes relaciones sociales, con fuerte apoyo percibido, conexiones significativas y alto sentido de pertenencia.',
+    },
+    {
+      dimensionId: 4,
+      levelId: 1,
+      description:
+        'Indica una dependencia muy alta de otros para la toma de decisiones y actividades diarias.',
+    },
+    {
+      dimensionId: 4,
+      levelId: 2,
+      description:
+        'Sugiere dificultades significativas para actuar de forma independiente y necesidad frecuente de ayuda.',
+    },
+    {
+      dimensionId: 4,
+      levelId: 3,
+      description:
+        'Refleja un equilibrio entre independencia y dependencia en diferentes áreas de la vida.',
+    },
+    {
+      dimensionId: 4,
+      levelId: 4,
+      description:
+        'Indica buena capacidad para desenvolverse de manera independiente en la mayoría de situaciones.',
+    },
+    {
+      dimensionId: 4,
+      levelId: 5,
+      description:
+        'Refleja una excelente capacidad para manejar responsabilidades de forma independiente y tomar decisiones autónomas.',
+    },
+  ];
+
+  await prisma.dimensionInterpretations.createMany({
+    data: interpretations,
+  });
+
+  const overallInterpretations = [
+    {
+      percentage: 20,
+      description:
+        'Los resultados indican un nivel muy bajo de bienestar psicológico general. Podría beneficiarse significativamente de intervenciones y apoyo especializado para mejorar su calidad de vida y bienestar emocional.',
+    },
+    {
+      percentage: 40,
+      description:
+        'Los resultados muestran un nivel bajo de bienestar psicológico. Se recomienda explorar áreas específicas de mejora, especialmente en las dimensiones con menor puntuación.',
+    },
+    {
+      percentage: 60,
+      description:
+        'Los resultados reflejan un nivel moderado de bienestar psicológico. Existe un equilibrio en varias áreas, aunque hay oportunidades para fortalecer aspectos específicos.',
+    },
+    {
+      percentage: 80,
+      description:
+        'Los resultados indican un nivel alto de bienestar psicológico general. Hay fortalezas significativas en varias dimensiones, lo que contribuye a una buena calidad de vida.',
+    },
+    {
+      percentage: 101,
+      description:
+        'Los resultados muestran un nivel muy alto de bienestar psicológico. Hay excelentes fortalezas en las diversas dimensiones evaluadas, lo que refleja una gran satisfacción y adaptación psicológica.',
+    },
+  ];
+
+  await prisma.overallInterpretations.createMany({
+    data: overallInterpretations,
+  });
+}
+
 async function main() {
   await seederUsers();
   await seederVocationalTest();
+  // *: Seed Psychological Test
+  await createLikertScales();
+  await createPsychologicalDimensions();
+  await createPsychologicalQuestions();
+  await createInterpretationPsychologicalTest();
 }
 
 main()

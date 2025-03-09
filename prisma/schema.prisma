@@ -94,7 +94,7 @@ model VocationalResponses {
 model PsychologicalTests {
   id        Int              @id @default(autoincrement())
   userId    Int              @map("user_id")  
-  createdAt DateTime         @default(now())
+  createdAt DateTime         @map("created_at") @default(now())
 
   @@map("psychological_tests")
 
@@ -111,6 +111,7 @@ model PsychologicalDimensions {
   @@map("psychological_dimensions")
 
   questions   PsychologicalQuestions[]
+  interpretations DimensionInterpretations[]
 }
 
 model PsychologicalQuestions {
@@ -174,4 +175,33 @@ model Comments {
 
   user      Users     @relation(fields: [userId], references: [id])
   post      Posts     @relation(fields: [postId], references: [id])
+}
+
+model InterpretationLevels {
+  id            Int   @id @default(autoincrement())
+  level         String  @unique
+  min           Int
+  max           Int
+  interpretations DimensionInterpretations[]
+
+  @@map("interpretation_levels")
+}
+
+model DimensionInterpretations {
+  id            Int                       @id @default(autoincrement())
+  dimensionId   Int                       @map("dimension_id")
+  levelId       Int                       @map("level_id")
+  description   String
+  levelInfo     InterpretationLevels       @relation(fields: [levelId], references: [id])
+  dimension     PsychologicalDimensions   @relation(fields: [dimensionId], references: [id])
+
+  @@map("dimension_interpretations")
+}
+
+model OverallInterpretations {
+  id            Int                       @id @default(autoincrement())
+  percentage    Int
+  description   String
+
+  @@map("overall_interpretations")
 }
