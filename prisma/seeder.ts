@@ -2,6 +2,25 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
+async function main() {
+  await seederUsers();
+  await seederVocationalTest();
+  // *: Seed Psychological Test
+  await createLikertScales();
+  await createPsychologicalDimensions();
+  await createPsychologicalQuestions();
+  await createInterpretationPsychologicalTest();
+}
+
+main()
+  .catch((e) => {
+    console.error(e);
+    process.exit(1);
+  })
+  .finally(() => {
+    void prisma.$disconnect();
+  });
+
 async function seederUsers() {
   await prisma.$transaction(async (prisma) => {
     await prisma.users.create({
@@ -907,22 +926,3 @@ async function createInterpretationPsychologicalTest() {
     data: overallInterpretations,
   });
 }
-
-async function main() {
-  await seederUsers();
-  await seederVocationalTest();
-  // *: Seed Psychological Test
-  await createLikertScales();
-  await createPsychologicalDimensions();
-  await createPsychologicalQuestions();
-  await createInterpretationPsychologicalTest();
-}
-
-main()
-  .catch((e) => {
-    console.error(e);
-    process.exit(1);
-  })
-  .finally(() => {
-    void prisma.$disconnect();
-  });
