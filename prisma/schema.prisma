@@ -208,11 +208,12 @@ model OverallInterpretations {
 }
 
 model Meets {
-  id            Int                       @id @default(autoincrement())
-  userId        Int                       @map("user_id")
+  id            Int                @id @default(autoincrement())
+  userId        Int                @map("user_id")
   date          DateTime
-  doctorName    String                    @map("doctor_name")
-  description   String                    @db.VarChar(50)
+  doctorName    String             @map("doctor_name")
+  description   String             @db.VarChar(50)
+  createdAt     DateTime           @map("created_at") @default(now())
 
   user          Users         @relation(fields: [userId], references: [id])
 }
