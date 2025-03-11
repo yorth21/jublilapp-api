@@ -33,6 +33,7 @@ model Users {
   PsychologicalTest PsychologicalTests[]
   Post Posts[]
   Comment Comments[]
+  Meet Meets[]
 }
 
 model VocationalTests {
@@ -204,4 +205,14 @@ model OverallInterpretations {
   description   String
 
   @@map("overall_interpretations")
+}
+
+model Meets {
+  id            Int                       @id @default(autoincrement())
+  userId        Int                       @map("user_id")
+  date          DateTime
+  doctorName    String                    @map("doctor_name")
+  description   String                    @db.VarChar(50)
+
+  user          Users         @relation(fields: [userId], references: [id])
 }
