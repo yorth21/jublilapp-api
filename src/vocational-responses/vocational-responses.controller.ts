@@ -5,6 +5,7 @@ import { AuthenticatedRequest } from 'src/interfaces/authenticated-user.interfac
 import { TestResultDto } from './dto/test-result.dto';
 import { CreateVocationalTestDto } from './dto/create-vocational-test.dto';
 
+@ApiBearerAuth()
 @Controller('vocational-responses')
 export class VocationalResponsesController {
   constructor(
@@ -13,7 +14,6 @@ export class VocationalResponsesController {
 
   @Post()
   @ApiOperation({ summary: 'Response vocational test' })
-  @ApiBearerAuth()
   @ApiOkResponse({
     description: 'The record has been successfully created.',
     type: TestResultDto,
@@ -30,7 +30,6 @@ export class VocationalResponsesController {
 
   @Get('by-user/:identification')
   @ApiOperation({ summary: 'Get all responses by user identification' })
-  @ApiBearerAuth()
   @ApiOkResponse({
     description: 'List of all responses by user',
     type: TestResultDto,
