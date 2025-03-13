@@ -82,4 +82,16 @@ export class MeetsService {
       return meetMapper;
     });
   }
+
+  async remove(id: number): Promise<ResMeetDto> {
+    const meet = await this.prisma.meets.delete({
+      where: { id },
+      include: { user: true },
+    });
+
+    const meetMapper = MeetMapper.toResMeetDto(meet);
+    meetMapper.userNames = meet.user.names;
+
+    return meetMapper;
+  }
 }

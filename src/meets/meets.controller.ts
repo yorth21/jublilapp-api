@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Param, Req } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Req,
+  Delete,
+} from '@nestjs/common';
 import { MeetsService } from './meets.service';
 import { CreateMeetDto } from './dto/create-meet.dto';
 import {
@@ -57,5 +65,15 @@ export class MeetsController {
   })
   findByUserIdentification(@Param('identification') identification: string) {
     return this.meetsService.findByUserIdentification(identification);
+  }
+
+  @ApiOperation({ summary: 'Get a meet by user id' })
+  @ApiOkResponse({
+    type: ResMeetDto,
+    description: 'Meet found',
+  })
+  @Delete(':id')
+  delete(@Param('id') id: string) {
+    return this.meetsService.remove(+id);
   }
 }
