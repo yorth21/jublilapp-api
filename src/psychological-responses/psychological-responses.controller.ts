@@ -14,7 +14,6 @@ import {
   ApiCreatedResponse,
   ApiOkResponse,
   ApiOperation,
-  ApiTags,
 } from '@nestjs/swagger';
 import { AuthenticatedRequest } from 'src/interfaces/authenticated-user.interface';
 import { TestResultDto } from './dto/test-result.dto';
