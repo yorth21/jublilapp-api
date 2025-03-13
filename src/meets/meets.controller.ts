@@ -49,7 +49,7 @@ export class MeetsController {
     return this.meetsService.findOne(+id);
   }
 
-  @Get('/user/:id')
+  @Get('/user/:identification')
   @ApiOperation({ summary: 'Get a meet by user identification' })
   @ApiOkResponse({
     type: ResMeetDto,
