@@ -14,18 +14,20 @@ import {
   ApiCreatedResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiTags,
 } from '@nestjs/swagger';
 import { AuthenticatedRequest } from 'src/interfaces/authenticated-user.interface';
 import { TestResultDto } from './dto/test-result.dto';
+import { ResPsychologicalQuestionDto } from './dto/res-psychological-question.dto';
 
-@Controller('psychological-test')
+@ApiBearerAuth()
+@Controller('psychological-responses')
 export class PsychologicalResponsesController {
   constructor(
     private readonly psychologicalResponsesService: PsychologicalResponsesService,
   ) {}
 
   @Post()
-  @ApiBearerAuth()
   @ApiOperation({ summary: 'Submit psychological test answers' })
   @ApiCreatedResponse({
     description: 'Test submitted successfully.',
@@ -38,8 +40,18 @@ export class PsychologicalResponsesController {
     return this.psychologicalResponsesService.create(responseDto, req.user.id);
   }
 
+  @Get('questions')
+  @ApiOperation({ summary: 'Get all psychological tests' })
+  @ApiOkResponse({
+    description: 'Return all tests.',
+    type: ResPsychologicalQuestionDto,
+    isArray: true,
+  })
+  async findAll() {
+    return this.psychologicalResponsesService.findAllQuestions();
+  }
+
   @Get('my-results')
-  @ApiBearerAuth()
   @ApiOperation({ summary: 'Get current user psychological test results' })
   @ApiOkResponse({
     description: 'Return test results if available.',
@@ -59,13 +71,14 @@ export class PsychologicalResponsesController {
   }
 
   @Get(':identification')
-  @ApiBearerAuth()
   @ApiOperation({ summary: 'Get psychological test by ID with results' })
   @ApiOkResponse({
     description: 'Return the test with results.',
     type: TestResultDto,
   })
-  async findOne(@Param('identification') identification: string) {
+  async findByUserIdentification(
+    @Param('identification') identification: string,
+  ) {
     const result =
       await this.psychologicalResponsesService.findTestResultByUserIdentification(
         identification,

@@ -4,6 +4,7 @@ import { ResponsePsychologicalTestDto } from './dto/response-psychological-test.
 import { TestResultDto } from './dto/test-result.dto';
 import { DimensionScoreDto } from './dto/dimension-score.dto';
 import { PsychologicalDimensions } from '@prisma/client';
+import { ResPsychologicalQuestionDto } from './dto/res-psychological-question.dto';
 
 @Injectable()
 export class PsychologicalResponsesService {
@@ -274,7 +275,7 @@ export class PsychologicalResponsesService {
   }
 
   async findAll() {
-    return this.prisma.psychologicalTests.findMany({
+    const tests = await this.prisma.psychologicalTests.findMany({
       include: {
         user: {
           select: {
@@ -294,6 +295,27 @@ export class PsychologicalResponsesService {
           },
         },
       },
+    });
+
+    return tests;
+  }
+
+  async findAllQuestions(): Promise<ResPsychologicalQuestionDto[]> {
+    const questions = await this.prisma.psychologicalQuestions.findMany({
+      include: {
+        dimension: true,
+      },
+    });
+
+    return questions.map((question) => {
+      return {
+        questionId: question.id,
+        question: question.question,
+        dimensionId: question.dimensionId,
+        dimensionTitle: question.dimension.name,
+        dimensionDescription: question.dimension.description,
+        position: question.position,
+      };
     });
   }
 
