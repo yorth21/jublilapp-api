@@ -42,18 +42,19 @@ async function seederUsers() {
 
     await prisma.users.create({
       data: {
-        names: 'María Fernanda',
-        lastNames: 'López Ruiz',
-        identification: '0987654321',
-        email: 'maria.lopez@example.com',
+        names: 'Karent',
+        lastNames: 'Cuaran',
+        identification: '221151006',
+        email: 'karent@gmail.com',
         address: 'Carrera 45 #89-10',
-        phone: '3109876543',
+        phone: '3106004569',
         password:
-          '$2b$10$lSuJRFTU5.0OMViGc4xLWeVpYPu9sJuuv27m56CnBra85DVHzsKWa',
-        birthDate: new Date('1995-09-10'),
+          '$2a$12$9BKhj6Wv2bGkSu5QmcfpuOrDoDCdcNqL32scIofb9jAt3Z1./Y2TO',
+        birthDate: new Date('2002-12-25'),
         gender: 'F',
-        job: 'Diseñadora Gráfica',
+        job: 'Ingeniera de Sistemas',
         isActive: true,
+        isAdmin: true,
       },
     });
   });

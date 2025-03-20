@@ -14,6 +14,7 @@ export class UserMapper {
       phone: user.phone,
       gender: user.gender,
       job: user.job,
+      isAdmin: user.isAdmin,
     };
   }
 }

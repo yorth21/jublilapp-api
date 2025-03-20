@@ -7,6 +7,7 @@ import {
   IsDate,
   Length,
   Matches,
+  IsBoolean,
 } from 'class-validator';
 
 export class ResUserDto {
@@ -93,4 +94,12 @@ export class ResUserDto {
   @IsString()
   @IsNotEmpty()
   job: string;
+
+  @ApiProperty({
+    description: 'User is an administrator',
+    example: false,
+  })
+  @IsBoolean()
+  @IsNotEmpty()
+  isAdmin: boolean;
 }
