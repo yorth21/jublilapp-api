@@ -10,13 +10,15 @@ export class EventsService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(createEventDto: CreateEventDto): Promise<ResEventDto> {
+    console.log(createEventDto.startDate);
+
     const event = await this.prisma.events.create({
       data: {
         type: createEventDto.type,
         title: createEventDto.title,
         description: createEventDto.description,
         link: createEventDto.link,
-        startDate: createEventDto.startDate,
+        startDate: new Date(createEventDto.startDate),
         image: createEventDto.image,
         location: createEventDto.location,
       },
