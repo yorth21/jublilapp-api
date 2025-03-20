@@ -217,4 +217,20 @@ model Meets {
   createdAt     DateTime           @map("created_at") @default(now())
 
   user          Users         @relation(fields: [userId], references: [id])
+
+  @@map("meets")
+}
+
+model Events {
+  id            Int                @id @default(autoincrement())
+  type          String
+  title         String
+  description   String
+  link          String
+  startDate     DateTime           @map("start_date")
+  location      String
+  image         String
+  isActive      Boolean            @map("is_active") @default(true)
+
+  @@map("events")
 }

@@ -9,6 +9,7 @@ import { VocationalResponsesModule } from './vocational-responses/vocational-res
 import { PsychologicalResponsesModule } from './psychological-responses/psychological-responses.module';
 import { MeetsModule } from './meets/meets.module';
 import { LikertScalesModule } from './likert-scales/likert-scales.module';
+import { EventsModule } from './events/events.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { LikertScalesModule } from './likert-scales/likert-scales.module';
     PsychologicalResponsesModule,
     MeetsModule,
     LikertScalesModule,
+    EventsModule,
   ],
   providers: [JwtAuthGuard],
 })
