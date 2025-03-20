@@ -72,7 +72,7 @@ export class CommentsService {
 
   async findByPostId(postId: number): Promise<ResCommentDto[]> {
     const comments = await this.prisma.comments.findMany({
-      where: { postId },
+      where: { postId, isActive: true },
       include: { user: true },
     });
 
