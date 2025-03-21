@@ -49,7 +49,7 @@ export class EventsService {
 
   async findByType(type: string): Promise<ResEventDto[]> {
     const events = await this.prisma.events.findMany({
-      where: { type },
+      where: { type, isActive: true },
     });
 
     return events.map((event) => EventMapper.toResEventDto(event));
