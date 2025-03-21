@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateMeetDto } from './dto/create-meet.dto';
 import { PrismaService } from 'src/prisma.service';
 import { MeetMapper } from './mappers/meet.mapper';
@@ -12,6 +16,15 @@ export class MeetsService {
     createMeetDto: CreateMeetDto,
     userId: number,
   ): Promise<ResMeetDto> {
+    const meetDate = new Date(createMeetDto.date);
+    const currentDate = new Date();
+
+    if (meetDate < currentDate) {
+      throw new BadRequestException(
+        'The meet date must be greater than the current date',
+      );
+    }
+
     const meet = await this.prisma.meets.create({
       data: {
         userId: userId,
